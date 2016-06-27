@@ -101,7 +101,7 @@ public class UService extends IntentService {
 	}
 
 	private void showSearchPrompt(String num) {
-		AlertDialog.Builder bld = new AlertDialog.Builder(this);
+		AlertDialog.Builder bld = new AlertDialog.Builder(this.getApplicationContext());
 		bld.setTitle("Unknown caller!");
 		bld.setMessage(num);
 		bld.setCancelable(true);
