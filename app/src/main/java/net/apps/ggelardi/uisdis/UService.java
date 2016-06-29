@@ -4,38 +4,31 @@ import android.app.IntentService;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.hardware.SensorManager;
+import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import java.lang.reflect.Method;
 
 public class UService extends IntentService implements ShakeDetector.Listener {
 	public static final String ACT_STATUS_IDLE = "UService.STATUS_IDLE";
-	public static final String ACT_INC_PRIVATE = "UService.INC_PRIVATE";
-	public static final String ACT_INC_WITHNUM = "UService.INC_WITHNUM";
-	public static final String ACT_REQ_SEARCH = "UService.REQ_SEARCH";
-	public static final String ACT_REQ_HANGUP = "UService.REQ_HANGUP";
-	//
-	public static final String ACT_TEST_SHAKE1 = "UService.TEST_SHAKE1";
-	public static final String ACT_TEST_SHAKE2 = "UService.TEST_SHAKE2";
-	//
-	public static final String PRM_RCVD_NUMBER = "NUMBER";
+	public static final String ACT_HANDLE_CALL = "UService.HANDLE_CALL";
+	public static final String ACT_BEGIN_TEST = "UService.BEGIN_TEST";
+	public static final String ACT_END_TEST = "UService.END_TEST";
 
 	private static final String TAG = "UService";
 
 	private USession session;
 	private SensorManager sensorManager;
 	private ShakeDetector shakeDetector;
-	private String lastNumber = null;
 
 	public UService() {
 		super("UService");
@@ -46,23 +39,25 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 
 	@Override
 	public void hearShake() {
-		//TODO: abbassa il volume della suoneria
-		if (lastNumber != null) {
-
-			//Get the window from the context
-			WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
-			//Unlock
-			//http://developer.android.com/reference/android/app/Activity.html#getWindow()
-			Window window = this.getWindow();
-			window.addFlags(wm.LayoutParams.FLAG_DISMISS_KEYGUARD);
-
-
-			Intent si = new Intent(Intent.ACTION_WEB_SEARCH);
-			si.putExtra(SearchManager.QUERY, "\"" + lastNumber + "\"");
-			si.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(si);
-			lastNumber = null;
-		}
+		shakeDetector.stop();
+		lowerRingVolume();
+		String num = session.getLastCallNumber();
+		if (num == null)
+			return;
+		// unlock
+		/*
+		//Get the window from the context
+		WindowManager wm = (WindowManager) this.getSystemService(Context.WINDOW_SERVICE);
+		//Unlock
+		//http://developer.android.com/reference/android/app/Activity.html#getWindow()
+		Window window = this.getWindow();
+		window.addFlags(wm.LayoutParams.FLAG_DISMISS_KEYGUARD);
+		*/
+		// search
+		Intent si = new Intent(Intent.ACTION_WEB_SEARCH);
+		si.putExtra(SearchManager.QUERY, "\"" + num + "\"");
+		si.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(si);
 	}
 
 	@Override
@@ -72,38 +67,38 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		String act = intent.getAction();
 		if (act.equals(ACT_STATUS_IDLE)) {
 			shakeDetector.stop();
-		} else if (act.equals(ACT_INC_WITHNUM)) {
-			lastNumber = intent.getStringExtra(PRM_RCVD_NUMBER);
-			if (!contactExists(lastNumber))
+			resetRingVolume();
+		} else if (act.equals(ACT_HANDLE_CALL)) {
+			String num = session.getLastCallNumber();
+			if (num == null) {
+				if (session.getRejectPrivateNumCalls() && killCall())
+					Toast.makeText(getApplicationContext(), R.string.endcall_private_toast, Toast.LENGTH_LONG).show();
+			} else if (!contactExists(num))
 				shakeDetector.start(sensorManager);
-		} else if (act.equals(ACT_INC_PRIVATE)) {
-			if (session.getRejectPrivateNumCalls() && killCall())
-				Toast.makeText(getApplicationContext(), R.string.endcall_private_toast, Toast.LENGTH_LONG).show();
-		} else if (act.equals(ACT_REQ_SEARCH)) {
-			shakeDetector.stop();
-			String num = intent.getStringExtra(PRM_RCVD_NUMBER);
-
-			/*
-			Intent si = new Intent(this, SearchActivity.class);
-			si.putExtra(PRM_RCVD_NUMBER, num);
-			si.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(si);
-			*/
-
-			Intent si = new Intent(Intent.ACTION_WEB_SEARCH);
-			si.putExtra(SearchManager.QUERY, "\"" + num + "\"");
-			si.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(si);
-
-		} else if (act.equals(ACT_REQ_HANGUP)) {
-			shakeDetector.stop();
-			lastNumber = null;
-			Toast.makeText(getApplicationContext(), R.string.endcall_action_toast, Toast.LENGTH_LONG).show();
-		} else if (act.equals(ACT_TEST_SHAKE1)) {
+		} else if (act.equals(ACT_BEGIN_TEST)) {
+			session.setLastCallNumber("3472002591");
 			shakeDetector.start(sensorManager);
-		} else if (act.equals(ACT_TEST_SHAKE2)) {
+		} else if (act.equals(ACT_END_TEST)) {
+			session.setLastCallNumber(null);
 			shakeDetector.stop();
 		}
+	}
+
+	private void lowerRingVolume() {
+		AudioManager am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		//am.getStreamVolume(AudioManager.STREAM_RING)
+
+		SharedPreferences prefs = session.getPrefs();
+	}
+
+	private void resetRingVolume() {
+		AudioManager am = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+		//am.getStreamVolume(AudioManager.STREAM_RING)
+	}
+
+	private void doSearch() {
+		shakeDetector.stop();
+		lowerRingVolume();
 	}
 
 	private boolean contactExists(String phoneNumber) {

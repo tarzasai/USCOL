@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 
 		/*
 		Intent si = new Intent(this, UService.class);
-		si.setAction(UService.ACT_TEST_SHAKE1);
+		si.setAction(UService.ACT_BEGIN_TEST);
 		startService(si);
 		*/
 	}
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 	@Override
 	public void onBackPressed() {
 		Intent si = new Intent(this, UService.class);
-		si.setAction(UService.ACT_TEST_SHAKE2);
+		si.setAction(UService.ACT_END_TEST);
 		startService(si);
 	}
 	*/

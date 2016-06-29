@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
@@ -58,15 +59,37 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 	}
 
 	public boolean getOnlySearchOnWiFi() {
-		return prefs.getBoolean("only_search_on_wifi", true);
+		return prefs.getBoolean(PK.NOROAM, true);
 	}
 
 	public boolean getRejectPrivateNumCalls() {
-		return prefs.getBoolean("reject_private_numbers", false);
+		return prefs.getBoolean(PK.NOPRIV, false);
+	}
+
+	public void setLastCallNumber(@Nullable String value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		if (value != null)
+			editor.putString(PK.LASTNO, value);
+		else
+			editor.remove(PK.LASTNO);
+		editor.commit();
+	}
+
+	public String getLastCallNumber() {
+		return prefs.getString(PK.LASTNO, null);
 	}
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
 		//
+	}
+
+	public static class PK {
+		// user preferences
+		public static final String NOPRIV = "pk_hang_privates";
+		public static final String NOROAM = "pk_wifi_searches";
+		// persisted variables (temp)
+		public static final String LASTNO = "mem_last_number";
+		public static final String RINGVO = "mem_ring_volume";
 	}
 }
