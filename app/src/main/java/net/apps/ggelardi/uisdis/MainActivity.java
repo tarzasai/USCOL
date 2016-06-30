@@ -8,9 +8,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.util.List;
 
@@ -42,22 +42,7 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 			pl = mp.toArray(pl);
 			ActivityCompat.requestPermissions(this, pl, PERM_REQUEST);
 		}
-
-		/*
-		Intent si = new Intent(this, UService.class);
-		si.setAction(UService.ACT_BEGIN_TEST);
-		startService(si);
-		*/
 	}
-
-	/*
-	@Override
-	public void onBackPressed() {
-		Intent si = new Intent(this, UService.class);
-		si.setAction(UService.ACT_END_TEST);
-		startService(si);
-	}
-	*/
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,17 +58,23 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_test_search) {
+		if (id == R.id.action_test_shake1) {
 			Intent si = new Intent(this, UService.class);
-			si.setAction(UService.ACT_REQ_SEARCH);
-			si.putExtra(UService.PRM_RCVD_NUMBER, "3472002591");
+			si.setAction(UService.ACT_TEST_START);
 			startService(si);
 			return true;
-		} else if (id == R.id.action_test_shake1) {
-			return true;
 		} else if (id == R.id.action_test_shake2) {
+			Intent si = new Intent(this, UService.class);
+			si.setAction(UService.ACT_TEST_STOP);
+			startService(si);
+			return true;
+		} else if (id == R.id.action_open_log) {
+			Intent si = new Intent(this, UService.class);
+			si.setAction(UService.ACT_OPEN_LOG);
+			startService(si);
 			return true;
 		} else if (id == R.id.action_settings) {
+			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

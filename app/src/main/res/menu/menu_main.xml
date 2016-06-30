@@ -4,12 +4,6 @@
       tools:context="net.apps.ggelardi.uisdis.MainActivity">
 
     <item
-        android:id="@+id/action_test_search"
-        android:orderInCategory="1"
-        android:title="@string/action_test_search"
-        app:showAsAction="never"/>
-
-    <item
         android:id="@+id/action_test_shake1"
         android:orderInCategory="2"
         android:title="@string/action_test_shake1"
@@ -19,6 +13,12 @@
         android:id="@+id/action_test_shake2"
         android:orderInCategory="3"
         android:title="@string/action_test_shake2"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/action_open_log"
+        android:orderInCategory="4"
+        android:title="@string/action_open_log"
         app:showAsAction="never"/>
 
     <item

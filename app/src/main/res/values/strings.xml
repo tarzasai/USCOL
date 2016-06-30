@@ -90,17 +90,24 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
 
-    <string name="action_test_search">Search test</string>
-    <string name="action_test_shake1">Begin test shake</string>
-    <string name="action_test_shake2">Stop test shake</string>
+    <string name="action_test_shake1">Begin test</string>
+    <string name="action_test_shake2">Stop test</string>
+    <string name="action_open_log">Open calls log</string>
     <string name="action_settings">Settings</string>
 
-    <string name="test_shaked">SHAKE DETECTED</string>
+    <string name="test_shaked">SHAKE THAT ASS!</string>
 
-    <string name="endcall_action_toast">Incoming call ended as requested (user request)</string>
     <string name="endcall_private_toast">Incoming call ended as requested (private number)</string>
 
     <string name="btn_ok">Ok</string>
     <string name="btn_cancel">Cancel</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pk_hang_privates">Reject private numbers</string>
+    <string name="pk_wifi_searches">Web search only in WiFi mode</string>
+    <string name="pk_unlock_device">Unlock device when needed</string>
+
 </resources>

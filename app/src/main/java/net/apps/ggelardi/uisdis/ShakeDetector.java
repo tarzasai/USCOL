@@ -1,13 +1,11 @@
 package net.apps.ggelardi.uisdis;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * from http://stackoverflow.com/a/29590245/28852
@@ -30,9 +28,10 @@ public class ShakeDetector implements SensorEventListener {
 		this.listener = listener;
 	}
 
-	public boolean start(SensorManager sensorManager) {
+	public boolean start(Context context) {
 		if (accelerometer != null)
 			return true;
+		sensorManager = (SensorManager) context.getSystemService(context.SENSOR_SERVICE);
 		accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 		if (accelerometer == null) {
 			Log.d(TAG, "Phone does not have accelerometers!");
