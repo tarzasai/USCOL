@@ -91,9 +91,9 @@
 
     <string name="main_text_1">Scuoti il telefono quando ricevi una chiamata da un numero non in rubrica</string>
 
-    <string name="action_test_shake1">Inizia test</string>
-    <string name="action_test_shake2">Stop test</string>
-    <string name="action_open_log">Apri registro chiamate</string>
+    <string name="notif_title">Chiamata ricevuta: %1$s</string>
+    <string name="notif_text">Tocca per aprire il registro delle chiamate</string>
+
     <string name="action_settings">Impostazioni</string>
 
     <string name="endcall_private_toast">Incoming call ended as requested (private number)</string>

@@ -2,6 +2,9 @@ package net.ggelardi.uscol;
 
 import android.app.IntentService;
 import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +14,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,10 +26,6 @@ import com.google.i18n.phonenumbers.Phonenumber;
 import java.lang.reflect.Method;
 
 public class UService extends IntentService implements ShakeDetector.Listener {
-	public static final String ACT_OPEN_LOG = "UService.OPEN_LOG";
-	public static final String ACT_TEST_START = "UService.TEST_START";
-	public static final String ACT_TEST_STOP = "UService.TEST_STOP";
-
 	private static final String TAG = "UService";
 
 	private USession session;
@@ -106,18 +106,12 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 					//TODO: notifica chiamata terminata (numero non in rubrica)
 				}
 			}
-		} else if (act.equals(ACT_OPEN_LOG)) {
-			Intent li = new Intent();
-			li.setAction(Intent.ACTION_VIEW);
-			li.setType(CallLog.Calls.CONTENT_TYPE);
-			li.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			this.startActivity(li);
-		} else if (act.equals(ACT_TEST_START)) {
+		} else if (act.equals("USERVICE_TEST")) {
+			/*
 			session.setLastIncomingNumber("+393472002591");
 			shakede.start(this);
-		} else if (act.equals(ACT_TEST_STOP)) {
-			//session.setLastCallNumber(null);
-			shakede.stop();
+			*/
+			sendNotification("3472002591");
 		}
 	}
 
@@ -144,10 +138,10 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 	}
 
 	private boolean contactExists(String phoneNumber) {
-		Log.d(TAG, "Looking up for contact with number " + phoneNumber);
+		Log.d(TAG, "Looking for a contact with number " + phoneNumber);
 		Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(phoneNumber));
 		Cursor cur = this.getContentResolver().query(uri, new String[]{
-			ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
+				ContactsContract.PhoneLookup.DISPLAY_NAME}, null, null, null);
 		try {
 			if (cur.moveToFirst()) {
 				String name = cur.getString(cur.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME));
@@ -170,5 +164,26 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		NetworkInfo ni = cm.getActiveNetworkInfo();
 		int ns = (ni != null && ni.isConnected()) ? ni.getType() : ConnectivityManager.TYPE_DUMMY;
 		return ns == ConnectivityManager.TYPE_WIFI;
+	}
+
+	private void sendNotification(String num) {
+		Intent ri = new Intent();
+		ri.setAction(Intent.ACTION_VIEW);
+		ri.setType(CallLog.Calls.CONTENT_TYPE);
+		ri.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+		PendingIntent pi = PendingIntent.getActivity(this, 0, ri, PendingIntent.FLAG_UPDATE_CURRENT);
+
+		NotificationCompat.Builder nb = new NotificationCompat.Builder(this);
+		nb.setSmallIcon(R.drawable.ic_stat_call_info);
+		nb.setContentTitle(String.format(getString(R.string.notif_title), num));
+		nb.setContentText(getString(R.string.notif_text));
+		nb.setContentIntent(pi);
+
+		Notification notif = nb.build();
+		notif.flags |= Notification.FLAG_AUTO_CANCEL;
+
+		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+		nm.notify(123, notif);
 	}
 }
