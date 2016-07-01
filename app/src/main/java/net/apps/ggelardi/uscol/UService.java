@@ -1,4 +1,4 @@
-package net.apps.ggelardi.uisdis;
+package net.apps.ggelardi.uscol;
 
 import android.app.IntentService;
 import android.app.KeyguardManager;
@@ -40,7 +40,7 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 
 	@Override
 	public void hearShake() {
-		//Toast.makeText(getApplicationContext(), R.string.test_shaked, Toast.LENGTH_SHORT).show();
+		//Toast.makeText(getApplicationContext(), "SHAKE THAT ASS!", Toast.LENGTH_SHORT).show();
 		shakede.stop();
 		session.lowerRingVolume();
 		String num = session.getLastIncomingNumber();
@@ -49,8 +49,6 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		// unlock
 		KeyguardManager km = (KeyguardManager) this.getSystemService(Context.KEYGUARD_SERVICE);
 		if (km.inKeyguardRestrictedInputMode()) {
-			if (!session.getAutoUnlockDevice())
-				return;
 			KeyguardManager.KeyguardLock keyguardLock = km.newKeyguardLock(TAG);
 			keyguardLock.disableKeyguard();
 		}

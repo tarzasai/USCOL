@@ -1,4 +1,4 @@
-package net.apps.ggelardi.uisdis;
+package net.apps.ggelardi.uscol;
 
 import android.Manifest;
 import android.content.Context;
@@ -61,10 +61,6 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 
 	public boolean getRejectPrivateNumCalls() {
 		return prefs.getBoolean(PK.NOPRIV, false);
-	}
-
-	public boolean getAutoUnlockDevice() {
-		return prefs.getBoolean(PK.UNLOCK, false);
 	}
 
 	public boolean getOnlySearchOnWiFi() {
@@ -152,7 +148,6 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		// user preferences
 		public static final String NOPRIV = "pk_hang_privates";
 		public static final String NOROAM = "pk_wifi_searches";
-		public static final String UNLOCK = "pk_unlock_device";
 		// persisted variables (temp)
 		public static final String SAVED_RINGVOL = "mem_ring_volume";
 		public static final String LASTPN = "mem_last_number";

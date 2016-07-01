@@ -1,4 +1,4 @@
-package net.apps.ggelardi.uisdis;
+package net.apps.ggelardi.uscol;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

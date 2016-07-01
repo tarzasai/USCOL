@@ -1,4 +1,4 @@
-package net.apps.ggelardi.uisdis;
+package net.apps.ggelardi.uscol;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
