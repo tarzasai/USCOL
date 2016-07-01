@@ -1,4 +1,4 @@
-package net.apps.ggelardi.uscol;
+package net.ggelardi.uscol;
 
 import android.content.Intent;
 import android.os.Bundle;

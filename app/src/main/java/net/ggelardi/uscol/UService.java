@@ -1,4 +1,4 @@
-package net.apps.ggelardi.uscol;
+package net.ggelardi.uscol;
 
 import android.app.IntentService;
 import android.app.KeyguardManager;
