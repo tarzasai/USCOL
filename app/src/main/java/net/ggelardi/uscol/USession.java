@@ -59,11 +59,23 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		return prefs;
 	}
 
-	public boolean getRejectPrivateNumCalls() {
+	public void setRejectPrivateNums(boolean value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(PK.NOPRIV, value);
+		editor.commit();
+	}
+
+	public boolean getRejectPrivateNums() {
 		return prefs.getBoolean(PK.NOPRIV, false);
 	}
 
-	public boolean getOnlySearchOnWiFi() {
+	public void setSearchOnWiFiOnly(boolean value) {
+		SharedPreferences.Editor editor = prefs.edit();
+		editor.putBoolean(PK.NOROAM, value);
+		editor.commit();
+	}
+
+	public boolean getSearchOnWiFiOnly() {
 		return prefs.getBoolean(PK.NOROAM, true);
 	}
 

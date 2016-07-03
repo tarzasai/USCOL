@@ -12,11 +12,9 @@ public class UReceiver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		Bundle extras = intent.getExtras();
-
 		String state = extras.getString(TelephonyManager.EXTRA_STATE);
 		String num = extras.containsKey(TelephonyManager.EXTRA_INCOMING_NUMBER) ?
 				extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER) : "";
-
 		Log.d(TAG, String.format("state: %1$s - num: '%2$s'", state, num));
 
 		USession session = USession.getInstance(context);
@@ -29,7 +27,6 @@ public class UReceiver extends BroadcastReceiver {
 		} else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
 			session.setLastIdleNumber(num);
 		}
-
 		context.startService(new Intent(context, UService.class).setAction(state));
 	}
 }

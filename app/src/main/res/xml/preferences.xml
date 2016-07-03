@@ -11,9 +11,4 @@
         android:key="pk_wifi_searches"
         android:title="@string/pk_wifi_searches" />
 
-    <CheckBoxPreference
-        android:defaultValue="false"
-        android:key="pk_unlock_device"
-        android:title="@string/pk_unlock_device" />
-
 </PreferenceScreen>

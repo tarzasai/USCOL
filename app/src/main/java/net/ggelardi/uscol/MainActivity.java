@@ -2,22 +2,19 @@ package net.ggelardi.uscol;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback {
 	private static final int PERM_REQUEST = 123;
-
-	private USession session;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,22 +23,31 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-		fab.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-			}
-		});
-
-		session = USession.getInstance(this);
-
+		final USession session = USession.getInstance(this);
 		List<String> mp = session.missingPermissions();
 		if (!mp.isEmpty()) {
 			String[] pl = new String[mp.size()];
 			pl = mp.toArray(pl);
 			ActivityCompat.requestPermissions(this, pl, PERM_REQUEST);
 		}
+
+		CheckBox chkWiFi = (CheckBox) findViewById(R.id.chkWifi);
+		chkWiFi.setChecked(session.getSearchOnWiFiOnly());
+		chkWiFi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+				session.setSearchOnWiFiOnly(b);
+			}
+		});
+
+		CheckBox chkNoPN = (CheckBox) findViewById(R.id.chkNoPriv);
+		chkNoPN.setChecked(session.getRejectPrivateNums());
+		chkNoPN.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+				session.setRejectPrivateNums(b);
+			}
+		});
 	}
 
 	@Override
@@ -62,9 +68,6 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 			Intent si = new Intent(this, UService.class);
 			si.setAction("USERVICE_TEST");
 			startService(si);
-			return true;
-		} else if (id == R.id.action_settings) {
-			startActivity(new Intent(this, SettingsActivity.class));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

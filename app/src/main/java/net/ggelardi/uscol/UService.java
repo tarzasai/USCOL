@@ -44,7 +44,7 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		shakede.stop();
 		session.lowerRingVolume();
 		String num = session.getLastIncomingNumber();
-		if (num == null || (!onWIFI() && session.getOnlySearchOnWiFi()))
+		if (num == null)
 			return;
 		// unlock
 		KeyguardManager km = (KeyguardManager) this.getSystemService(Context.KEYGUARD_SERVICE);
@@ -72,24 +72,17 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		/*
-		if (BlockedNumberContract.canCurrentUserBlockNumbers(this)) {
-			ContentValues values = new ContentValues();
-			values.put(BlockedNumberContract.BlockedNumbers.COLUMN_ORIGINAL_NUMBER, "1234567890");
-			Uri uri = getContentResolver().insert(BlockedNumberContract.BlockedNumbers.CONTENT_URI, values);
-		}
-		*/
 		Log.d(TAG, intent.toString());
 		String act = intent.getAction();
 		if (act.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
 			String num = session.getLastIncomingNumber();
 			if (num == null) {
-				if (session.getRejectPrivateNumCalls() && rejectCall()) {
+				if (session.getRejectPrivateNums() && rejectCall()) {
 					//TODO: notifica chiamata rifiutata
 					//TODO: COSA SUCCEDE A UN'EVENTUALE CONVERSAZIONE IN CORSO (iniziata prima)???
 					Toast.makeText(getApplicationContext(), R.string.endcall_private_toast, Toast.LENGTH_LONG).show();
 				}
-			} else if (!contactExists(num)) {
+			} else if (!contactExists(num) && (onWIFI() || !session.getSearchOnWiFiOnly())) {
 				shakede.start(this);
 			}
 		} else if (act.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
