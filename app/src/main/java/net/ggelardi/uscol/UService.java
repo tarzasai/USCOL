@@ -46,13 +46,17 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		String num = session.getLastIncomingNumber();
 		if (num == null)
 			return;
-		// unlock
+		// unlock device if necessary
 		KeyguardManager km = (KeyguardManager) this.getSystemService(Context.KEYGUARD_SERVICE);
 		if (km.inKeyguardRestrictedInputMode()) {
 			KeyguardManager.KeyguardLock keyguardLock = km.newKeyguardLock(TAG);
 			keyguardLock.disableKeyguard();
 		}
-		// remember
+		// check network preferences
+		if (!onWIFI() && session.getSearchOnWiFiOnly()) {
+			Toast.makeText(getApplicationContext(), R.string.toast_noroam, Toast.LENGTH_LONG).show();
+			return;
+		}
 		session.setLastSearchedNumber(num);
 		// remove country code
 		PhoneNumberUtil pu = PhoneNumberUtil.getInstance();
@@ -63,7 +67,7 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		} catch (NumberParseException e) {
 			Log.e(TAG, "hearShake", e);
 		}
-		// search
+		// launch web search
 		Intent si = new Intent(Intent.ACTION_WEB_SEARCH);
 		si.putExtra(SearchManager.QUERY, "\"" + num + "\"");
 		si.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -78,13 +82,11 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 			String num = session.getLastIncomingNumber();
 			if (num == null) {
 				if (session.getRejectPrivateNums() && rejectCall()) {
-					//TODO: notifica chiamata rifiutata
 					//TODO: COSA SUCCEDE A UN'EVENTUALE CONVERSAZIONE IN CORSO (iniziata prima)???
-					Toast.makeText(getApplicationContext(), R.string.endcall_private_toast, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.toast_nopriv, Toast.LENGTH_LONG).show();
 				}
-			} else if (!contactExists(num) && (onWIFI() || !session.getSearchOnWiFiOnly())) {
+			} else if (!contactExists(num))
 				shakede.start(this);
-			}
 		} else if (act.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
 			shakede.stop();
 			session.restoreRingVolume();
@@ -95,15 +97,13 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 			String inum = session.getLastIdleNumber();
 			if (inum != null) {
 				String snum = session.getLastSearchedNumber();
-				if (snum != null && snum.equals(inum)) {
-					//TODO: notifica chiamata terminata (numero non in rubrica)
-				}
+				if (snum != null && snum.equals(inum))
+					sendNotification(snum);
 			}
-		} else if (act.equals("USERVICE_TEST")) {
-			/*
+		} else if (act.equals("USERVICE_TEST_SHAKE")) {
 			session.setLastIncomingNumber("+393472002591");
 			shakede.start(this);
-			*/
+		} else if (act.equals("USERVICE_TEST_NOTIF")) {
 			sendNotification("3472002591");
 		}
 	}
@@ -177,6 +177,6 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		notif.flags |= Notification.FLAG_AUTO_CANCEL;
 
 		NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		nm.notify(123, notif);
+		nm.notify(1023, notif);
 	}
 }

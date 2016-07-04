@@ -64,12 +64,18 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_test) {
+		if (id == R.id.action_test_shake) {
 			Intent si = new Intent(this, UService.class);
-			si.setAction("USERVICE_TEST");
+			si.setAction("USERVICE_TEST_SHAKE");
 			startService(si);
 			return true;
 		}
+		/*if (id == R.id.action_test_notif) {
+			Intent si = new Intent(this, UService.class);
+			si.setAction("USERVICE_TEST_NOTIF");
+			startService(si);
+			return true;
+		}*/
 		return super.onOptionsItemSelected(item);
 	}
 
