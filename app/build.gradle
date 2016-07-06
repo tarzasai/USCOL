@@ -6,9 +6,9 @@ android {
 
     defaultConfig {
         applicationId "net.ggelardi.uscol"
-        minSdkVersion 22
+        minSdkVersion 19
         targetSdkVersion 24
-        versionCode 2
+        versionCode 3
         versionName "1.0"
     }
     buildTypes {
