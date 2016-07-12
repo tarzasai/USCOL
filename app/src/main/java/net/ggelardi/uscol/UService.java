@@ -23,6 +23,8 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.lang.reflect.Method;
 
 public class UService extends IntentService implements ShakeDetector.Listener {
@@ -58,19 +60,26 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 			return;
 		}
 		session.setLastSearchedNumber(num);
-		// normalize & remove country code
-		num = PhoneNumberUtil.normalizeDigitsOnly(num);
+		String qry = "\"" + num + "\"";
+		// try to clean the number
 		PhoneNumberUtil pu = PhoneNumberUtil.getInstance();
 		try {
 			Phonenumber.PhoneNumber pn = pu.parse(num, "");
-			if (pn.hasNationalNumber())
+			if (pn.hasNationalNumber()) {
+				if (pn.hasCountryCode())
+					pn.clearCountryCode();
 				num = String.valueOf(pn.getNationalNumber());
+				if (pn.hasItalianLeadingZero())
+					num = StringUtils.repeat("0", pn.getNumberOfLeadingZeros()) + num;
+				qry += " OR \"" + num + "\"";
+			}
 		} catch (NumberParseException e) {
 			Log.e(TAG, "hearShake", e);
+			qry += " OR \"" + PhoneNumberUtil.normalizeDigitsOnly(num) + "\"";
 		}
 		// launch web search
 		Intent si = new Intent(Intent.ACTION_WEB_SEARCH);
-		si.putExtra(SearchManager.QUERY, "\"" + num + "\"");
+		si.putExtra(SearchManager.QUERY, qry);
 		si.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(si);
 	}
@@ -102,7 +111,8 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 					sendNotification(snum);
 			}
 		} else if (act.equals("USERVICE_TEST_SHAKE")) {
-			session.setLastIncomingNumber("+393472002591");
+			session.setLastIncomingNumber("3472002591");
+			//session.setLastIncomingNumber("+390247950694");
 			//session.setLastIncomingNumber("513-379-1705");
 			shakede.start(this);
 		} else if (act.equals("USERVICE_TEST_NOTIF")) {
