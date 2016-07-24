@@ -13,14 +13,16 @@ public class UReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		Bundle extras = intent.getExtras();
 		String state = extras.getString(TelephonyManager.EXTRA_STATE);
-		String num = extras.containsKey(TelephonyManager.EXTRA_INCOMING_NUMBER) ?
-				extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER) : "";
+		if (state == null)
+			return;
+		String num = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
+		if (num == null)
+			num = "";
 		Log.d(TAG, String.format("state: %1$s - num: '%2$s'", state, num));
-
 		USession session = USession.getInstance(context);
 		if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
 			session.setLastIncomingNumber(num.equals("") ? null : num);
-		} else if (num == "") {
+		} else if (num.equals("")) {
 			// non alteriamo i numeri salvati in precedenza.
 		} else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
 			session.setLastAnsweredNumber(num);

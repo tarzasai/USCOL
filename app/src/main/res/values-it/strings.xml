@@ -2,14 +2,20 @@
     <string name="app_name">Chi mi chiama?</string>
 
     <string name="main_instr_title">Istruzioni</string>
-    <string name="main_text_1">Quest\'app si attiva quando ricevi una chiamata da un numero che non è nella tua rubrica. Tutto quello che devi fare è:</string>
-    <string name="main_text_2">&#8226; Lasciarlo squillare e scuotere il telefono (il volume della suoneria verrà immediatamente abbassato al minimo).</string>
+    <string name="main_text_1">Quest\'app si attiva solo quando ricevi una chiamata da un numero che non è nella tua rubrica. Tutto quello che devi fare è:</string>
+    <string name="main_text_2">&#8226; Lasciarlo squillare e scuotere il telefono (il volume della suoneria sarà immediatamente abbassato al minimo).</string>
     <string name="main_text_3">&#8226; Guardare i risultati della ricerca: il numero potrebbe essere stato segnalato come pubblicità aggressiva.</string>
     <string name="main_text_4">&#8226; Tornare indietro e rispondere o rifiutare la chiamata nel solito modo.</string>
 
     <string name="main_opts_title">Impostazioni</string>
     <string name="pk_wifi_searches">Attiva la funzione di ricerca solo quando sei connesso a una rete WiFi.</string>
     <string name="pk_hang_privates">Rifiuta sempre le chiamate da chi nasconde il proprio numero di telefono (numeri privati).</string>
+
+    <string name="main_debug_title">Ultima chiamata gestita</string>
+    <string name="main_debug_number">Numero: %1$s</string>
+    <string name="main_debug_legit">Azione: nessuna (contatto presente in rubrica)</string>
+    <string name="main_debug_search">Azione: eseguita ricerca web</string>
+    <string name="main_debug_reject">Azione: respinta come da impostazioni</string>
 
     <string name="notif_title">Chiamata ricevuta: %1$s</string>
     <string name="notif_text">Tocca per aprire il registro delle chiamate</string>

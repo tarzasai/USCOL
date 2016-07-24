@@ -8,8 +8,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -48,6 +50,20 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 				session.setRejectPrivateNums(b);
 			}
 		});
+
+		TextView txtDbgHdr = (TextView) findViewById(R.id.txtLastHead);
+		TextView txtDbgNum = (TextView) findViewById(R.id.txtLastCall);
+		TextView txtDbgRes = (TextView) findViewById(R.id.txtLastRes);
+
+		String lastNo = session.getLastIncomingNumber();
+		if (lastNo == null) {
+			txtDbgHdr.setVisibility(View.GONE);
+			txtDbgNum.setVisibility(View.GONE);
+			txtDbgRes.setVisibility(View.GONE);
+		} else {
+			txtDbgNum.setText(String.format(getString(R.string.main_debug_number), lastNo));
+
+		}
 	}
 
 	@Override
