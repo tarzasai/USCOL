@@ -15,19 +15,19 @@ public class UReceiver extends BroadcastReceiver {
 		String state = extras.getString(TelephonyManager.EXTRA_STATE);
 		if (state == null)
 			return;
-		String num = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-		if (num == null)
-			num = "";
+		String num = extras.getString(TelephonyManager.EXTRA_INCOMING_NUMBER, "");
 		Log.d(TAG, String.format("state: %1$s - num: '%2$s'", state, num));
 		USession session = USession.getInstance(context);
 		if (state.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
 			session.setLastIncomingNumber(num.equals("") ? null : num);
 		} else if (num.equals("")) {
-			// non alteriamo i numeri salvati in precedenza.
+			// è OFFHOOK o IDLE ma era un numero privato, quindi non modifico LastAnswered e LastIdle
 		} else if (state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
-			session.setLastAnsweredNumber(num);
+			if (num.equals(session.getLastIncomingNumber("xxx")))
+				session.setLastAnsweredNumber(num);
 		} else if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
-			session.setLastIdleNumber(num);
+			if (num.equals(session.getLastIncomingNumber("xxx")))
+				session.setLastIdleNumber(num);
 		}
 		context.startService(new Intent(context, UService.class).setAction(state));
 	}

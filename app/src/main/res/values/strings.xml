@@ -2,7 +2,7 @@
     <string name="app_name">Who\'s calling?</string>
 
     <string name="main_instr_title">Instructions</string>
-    <string name="main_text_1">This app is only activated when someone calls you from a number not in your address book. All you need to do is:</string>
+    <string name="main_text_1">This app is <b>only</b> activated when someone calls you from a number not in your address book. All you need to do is:</string>
     <string name="main_text_2">&#8226; Do not respond or reject the call: let it ring and shake the phone (ringtone volume will be lowered instantly)</string>
     <string name="main_text_3">&#8226; Evaluate the search results: the number may have been reported as telemarketer, scammer or other boring people.</string>
     <string name="main_text_4">&#8226; Go back to answer or reject the call.</string>
@@ -11,7 +11,12 @@
     <string name="pk_wifi_searches">Activate the search function only when connected to WiFi.</string>
     <string name="pk_hang_privates">Always reject calls from people who hide their phone number (private numbers).</string>
 
-    <string name="main_debug_title">Last processed call</string>
+    <string name="main_debug_title">Debug</string>
+    <string name="main_debug_linc">Last incoming number:</string>
+    <string name="main_debug_lsrc">Last searched number:</string>
+    <string name="main_debug_lans">Last accepted call:</string>
+    <string name="main_debug_lidl">Last ended call:</string>
+    <string name="main_debug_sample">+390247950694</string>
 
     <string name="notif_title">Received call: %1$s</string>
     <string name="notif_text">Touch to open the calls log</string>
@@ -21,5 +26,6 @@
 
     <string name="action_test_shake">Test shake-to-search</string>
     <string name="action_test_notif">Test notification</string>
+    <string name="action_test_sample">513-379-1705</string>
 
 </resources>

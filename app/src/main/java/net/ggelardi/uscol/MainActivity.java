@@ -1,6 +1,7 @@
 package net.ggelardi.uscol;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
@@ -11,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.GridLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -26,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 		setSupportActionBar(toolbar);
 
 		final USession session = USession.getInstance(this);
+
+		// check & ask permissions
 		List<String> mp = session.missingPermissions();
 		if (!mp.isEmpty()) {
 			String[] pl = new String[mp.size()];
@@ -51,18 +55,21 @@ public class MainActivity extends AppCompatActivity implements OnRequestPermissi
 			}
 		});
 
-		TextView txtDbgHdr = (TextView) findViewById(R.id.txtLastHead);
-		TextView txtDbgNum = (TextView) findViewById(R.id.txtLastCall);
-		TextView txtDbgRes = (TextView) findViewById(R.id.txtLastRes);
-
-		String lastNo = session.getLastIncomingNumber();
-		if (lastNo == null) {
-			txtDbgHdr.setVisibility(View.GONE);
-			txtDbgNum.setVisibility(View.GONE);
-			txtDbgRes.setVisibility(View.GONE);
+		// check beta version
+		String versionName = "1.0";
+		try {
+			versionName = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+		} catch (PackageManager.NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		if (!versionName.endsWith("b")) {
+			findViewById(R.id.txtDebug).setVisibility(View.GONE);
+			findViewById(R.id.grdDebug).setVisibility(View.GONE);
 		} else {
-			txtDbgNum.setText(String.format(getString(R.string.main_debug_number), lastNo));
-
+			((TextView) findViewById(R.id.txtDbgInc)).setText(session.getLastIncomingNumber("n/a"));
+			((TextView) findViewById(R.id.txtDbgSrc)).setText(session.getLastSearchedNumber("n/a"));
+			((TextView) findViewById(R.id.txtDbgAns)).setText(session.getLastAnsweredNumber("n/a"));
+			((TextView) findViewById(R.id.txtDbgIdl)).setText(session.getLastIdleNumber("n/a"));
 		}
 	}
 

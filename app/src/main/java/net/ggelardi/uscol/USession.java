@@ -105,8 +105,8 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		editor.commit();
 	}
 
-	private String getPhoneNumber(String prefkey) {
-		return prefs.getString(prefkey, null);
+	private String getPhoneNumber(String prefkey, String _default) {
+		return prefs.getString(prefkey, _default);
 	}
 
 	/**/
@@ -115,8 +115,8 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		setPhoneNumber(PK.LAST_INCOMING, value);
 	}
 
-	public String getLastIncomingNumber() {
-		return getPhoneNumber(PK.LAST_INCOMING);
+	public String getLastIncomingNumber(String _default) {
+		return getPhoneNumber(PK.LAST_INCOMING, _default);
 	}
 
 	/**/
@@ -125,8 +125,8 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		setPhoneNumber(PK.LAST_SEARCHED, value);
 	}
 
-	public String getLastSearchedNumber() {
-		return getPhoneNumber(PK.LAST_SEARCHED);
+	public String getLastSearchedNumber(String _default) {
+		return getPhoneNumber(PK.LAST_SEARCHED, _default);
 	}
 
 	/**/
@@ -135,8 +135,8 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		setPhoneNumber(PK.LAST_ANSWERED, value);
 	}
 
-	public String getLastAnsweredNumber() {
-		return getPhoneNumber(PK.LAST_ANSWERED);
+	public String getLastAnsweredNumber(String _default) {
+		return getPhoneNumber(PK.LAST_ANSWERED, _default);
 	}
 
 	/**/
@@ -145,8 +145,8 @@ public class USession implements SharedPreferences.OnSharedPreferenceChangeListe
 		setPhoneNumber(PK.LAST_IDLESTAT, value);
 	}
 
-	public String getLastIdleNumber() {
-		return getPhoneNumber(PK.LAST_IDLESTAT);
+	public String getLastIdleNumber(String _default) {
+		return getPhoneNumber(PK.LAST_IDLESTAT, _default);
 	}
 
 	/**/

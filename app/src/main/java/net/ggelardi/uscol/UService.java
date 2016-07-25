@@ -45,7 +45,7 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		//Toast.makeText(getApplicationContext(), "SHAKE THAT ASS!", Toast.LENGTH_SHORT).show();
 		shakede.stop();
 		session.lowerRingVolume();
-		String num = session.getLastIncomingNumber();
+		String num = session.getLastIncomingNumber(null);
 		if (num == null)
 			return;
 		// unlock device if necessary
@@ -89,7 +89,7 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		Log.d(TAG, intent.toString());
 		String act = intent.getAction();
 		if (act.equals(TelephonyManager.EXTRA_STATE_RINGING)) {
-			String num = session.getLastIncomingNumber();
+			String num = session.getLastIncomingNumber(null);
 			if (num == null) {
 				if (session.getRejectPrivateNums() && rejectCall()) {
 					//TODO: COSA SUCCEDE A UN'EVENTUALE CONVERSAZIONE IN CORSO (iniziata prima)???
@@ -100,20 +100,16 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 		} else if (act.equals(TelephonyManager.EXTRA_STATE_OFFHOOK)) {
 			shakede.stop();
 			session.restoreRingVolume();
-			// niente?
+			// LastAnswered è già stato impostato, qui non c'è altro da fare.
 		} else if (act.equals(TelephonyManager.EXTRA_STATE_IDLE)) {
 			shakede.stop();
 			session.restoreRingVolume();
-			String inum = session.getLastIdleNumber();
-			if (inum != null) {
-				String snum = session.getLastSearchedNumber();
-				if (snum != null && snum.equals(inum))
-					sendNotification(snum);
-			}
+			String inum = session.getLastIdleNumber("aaa");
+			String snum = session.getLastSearchedNumber("bbb");
+			if (snum.equals(inum))
+				sendNotification(snum);
 		} else if (act.equals("USERVICE_TEST_SHAKE")) {
-			session.setLastIncomingNumber("3472002591");
-			//session.setLastIncomingNumber("+390247950694");
-			//session.setLastIncomingNumber("513-379-1705");
+			session.setLastIncomingNumber(getString(R.string.action_test_sample));
 			shakede.start(this);
 		} else if (act.equals("USERVICE_TEST_NOTIF")) {
 			sendNotification("3472002591");
