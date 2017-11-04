@@ -109,7 +109,7 @@ public class UService extends IntentService implements ShakeDetector.Listener {
 			if (snum.equals(inum))
 				sendNotification(snum);
 		} else if (act.equals("USERVICE_TEST_SHAKE")) {
-			session.setLastIncomingNumber(getString(R.string.action_test_sample));
+			session.setLastIncomingNumber(session.getLastIncomingNumber(getString(R.string.action_test_sample)));
 			shakede.start(this);
 		} else if (act.equals("USERVICE_TEST_NOTIF")) {
 			sendNotification("3472002591");
